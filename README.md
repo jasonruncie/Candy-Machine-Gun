@@ -1,5 +1,6 @@
 ### Candy-Machine-Gun
 
+
 This project's purpose is to automate most of the process for launching a Candy Machine, just point and shoot. Hopefully this simplification of the process can lead to more advancements in the feaures around it, like the new art generator that is part of the metaplex repo.
 
 The process was developed with guidance from many resources; especially:

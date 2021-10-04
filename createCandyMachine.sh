@@ -18,6 +18,10 @@ TIMESTAMP=$(date +%s)
 #                   If you have a cache file such as "devnet-cache1633279043" that you have modified to re-use on mainnet-beta, you will have to rename it to mainnet-beta-cache1633279043 first.
 #                   The same applies for going the other way, or to/from testnet
 
+###########################
+## Example direct calls: ##
+# bash ./createCandyMachine.sh --network devnet --price 0.1 --num_to_mint 1 --startdate "24 Sep 2021 12:00:00 GMT"
+# bash ./createCandyMachine.sh --network mainnet-beta --price 1 --num_to_mint 0 --startdate "24 Sep 2021 12:00:00 GMT"
 
 ########################
 ## Process parameters ##
@@ -150,6 +154,7 @@ fi
 echo "Upload files to arweave and create the cache."
 echo "node /app/cm/build/candy-machine-cli.js upload /app/shared/images/ --env $NETWORK --keypair /root/.config/solana/id.json -c $CACHEFILENAME -l trace" | tee $RUNDIR/2-uploadLog.txt
 node /app/cm/build/candy-machine-cli.js upload /app/shared/images/ --env $NETWORK --keypair /root/.config/solana/id.json -c $CACHEFILENAME -l trace  2>&1 | tee -a $RUNDIR/2-uploadLog.txt
+
 #TODO Check log file
 # Potential Errors to watch for:
 # Translating error Error: Transaction was not confirmed in 60.01 seconds.
