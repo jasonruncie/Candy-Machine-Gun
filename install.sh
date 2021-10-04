@@ -43,6 +43,7 @@ yarn build
 cd /app/
 git clone https://github.com/exiled-apes/candy-machine-mint.git candy-machine-mint
 cd candy-machine-mint
+# The below command is called out by the yarn install as something that should be run to keep browser data up to date.
 npx browserslist@latest --update-db
 yarn install
 
