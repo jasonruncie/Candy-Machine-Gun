@@ -58,7 +58,7 @@ If you do not have an id.json file you've been working with, just look in ./shar
 
 Copy the whole thing, including the brackets. Go to Phantom, click the 3-bars/hamburger button in the top-left, click Add / Connect Wallet.
 Click on Import Private Key, then paste that string into the Private Key field, and give it a name you will recognize, such as candywallet.
-Then click on the gear in the bottom-right of Phantom, scroll down to Change Network, click that, then click Devnet - assuming you are testing on devbet.
+Then click on the gear in the bottom-right of Phantom, scroll down to Change Network, click that, then click Devnet - assuming you are testing on devnet.
 
 Then when you are ready for mainnet, just send some SOL to the wallet you are using and change "devnet" to "mainnet-beta" in the createCandyMachine.sh call. You can run the script yourself in the Terminal, or use Compose Restart to cause the script to run again with the arguments in the Dockerfile ENTRYPOINT. 
 
