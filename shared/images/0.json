@@ -1,0 +1,42 @@
+{
+  "name": "JR Ambigrams #1",
+  "symbol": "{run:c}",
+  "description": "My first NFT; intersecting ambigrams of my name",
+  "seller_fee_basis_points": 3333,
+  "image": "image.png",
+  "animation_url": "image.png",
+  "external_url": "https://github.com/jasonruncie/Candy-Machine-Gun",
+  "attributes": [
+    {
+      "trait_type": "Background",
+      "value": "Black"
+    },
+    {
+      "trait_type": "Text",
+      "value": "Jason Runcie"
+    },
+    {
+      "trait_type": "Text Color",
+      "value": "Red + Blue-Green"
+    }
+  ],
+  "collection": {
+    "name": "JR Ambigrams",
+    "family": "Jason Runcie"
+  },
+  "properties": {
+    "files": [
+      {
+        "uri": "image.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image",
+    "creators": [
+      {
+        "address": "JASoNvc2K2jpXm13mGMmhN9ktevpS4PDijayrp8sLJrw",
+        "share": 100
+      }
+    ]
+  }
+}

@@ -1,0 +1,13 @@
+version: "3.9"  # optional since v1.27.0
+services:
+  cm:
+    build: .
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./shared:/app/shared
+volumes:
+  shared:
+
