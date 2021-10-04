@@ -30,3 +30,4 @@ hfuzz_workspace
 **/.DS_Store
 .cache
 id.json
+shared/

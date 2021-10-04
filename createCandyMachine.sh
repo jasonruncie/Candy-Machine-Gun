@@ -116,13 +116,14 @@ if [ -f /app/shared/id.json ]; then
     cp /app/shared/id.json /root/.config/solana/
 
 else
+    echo "No wallet was provided."
     echo "Creating new wallet, with the id.json in the shared folder and copied to the default location"
     if [ $NETWORK == "mainnet" ]; then
         echo "You will need to add funds to the wallet before you can upload. Cost is currently about 16.7 SOL / 10,000 files"
     fi
     # Create a new keypair to be the treasury for the Candy Machine
-    echo "solana-keygen new --outfile /app/shared/id.json" > /app/shared/SECRET-$RUNNAME-SolanaKeygenLog.txt
-    solana-keygen new --outfile /app/shared/id.json  2>&1 | tee -a /app/shared/SECRET-$RUNNAME-SolanaKeygenLog.txt
+    echo "solana-keygen new --no-passphrase --outfile /app/shared/id.json" > /app/shared/SECRET-$RUNNAME-SolanaKeygenLog.txt
+    solana-keygen new --no-passphrase --outfile /app/shared/id.json  2>&1 | tee -a /app/shared/SECRET-$RUNNAME-SolanaKeygenLog.txt
     cp -v /app/shared/id.json /root/.config/solana/ >> /app/shared/SECRET-$RUNNAME-SolanaKeygenLog.txt
 fi
 
