@@ -1,5 +1,6 @@
 ### Candy-Machine-Gun
 
+[![Quick Demo](https://img.youtube.com/vi/2zzf8YrcEbo/hqdefault.jpg)](https://youtu.be/2zzf8YrcEbo)
 
 This project's purpose is to automate most of the process for launching a Candy Machine, just point and shoot. Hopefully this simplification of the process can lead to more advancements in the feaures around it, like the new art generator that is part of the metaplex repo.
 
@@ -52,6 +53,12 @@ A funded Solana wallet is needed to create a Candy Machine.  You can add an exis
 On devnet, the script will airdrop 1 SOL for you if there is no balance, however the airdrop is limited and may. not always complete. The accout in the id.json file will be retained and reused for additional runs, even if you requild the image, unless you remove it from ./shared. You can send more SOL to that wallet (which will be displayed in the logs) using https://www.spl-token-ui.com/#/sol-airdrop or transfer from another wallet. 
 
 *Note: This project does not include an id.json file in it.*
+
+If you do not have an id.json file you've been working with, just look in ./shared a little bit after running "Compose Up" and there will be a new one there. This is what will be the authoitative key for the Candy Machine.  To use this wallet in Phantom, open it with a text editor, there will be a bunch of numbers in brackets [1 2 3 ... 234 235]
+
+Copy the whole thing, including the brackets. Go to Phantom, click the 3-bars/hamburger button in the top-left, click Add / Connect Wallet.
+Click on Import Private Key, then paste that string into the Private Key field, and give it a name you will recognize, such as candywallet.
+Then click on the gear in the bottom-right of Phantom, scroll down to Change Network, click that, then click Devnet - assuming you are testing on devnet.
 
 Then when you are ready for mainnet, just send some SOL to the wallet you are using and change "devnet" to "mainnet-beta" in the createCandyMachine.sh call. You can run the script yourself in the Terminal, or use Compose Restart to cause the script to run again with the arguments in the Dockerfile ENTRYPOINT. 
 
