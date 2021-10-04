@@ -192,7 +192,7 @@ if [[ $STARTDATE != '' ]]; then
     # A past date is fine if you want access right away
     echo "Setting startdate to $STARTDATE"
     echo "node /app/cm/build/candy-machine-cli.js update_candy_machine -e $NETWORK -k /root/.config/solana/id.json -d $STARTDATE -c $CACHEFILENAME -l trace" | tee $RUNDIR/6-updateStartDateLog.txt
-    node /app/cm/build/candy-machine-cli.js update_candy_machine -e $NETWORK -k /root/.config/solana/id.json -d $STARTDATE -c $CACHEFILENAME -l trace 2>&1 | tee -a $RUNDIR/6-updateStartDateLog.txt
+    node /app/cm/build/candy-machine-cli.js update_candy_machine -e $NETWORK -k /root/.config/solana/id.json -d "$STARTDATE" -c $CACHEFILENAME -l trace 2>&1 | tee -a $RUNDIR/6-updateStartDateLog.txt
     #TODO Check log file
 else
     echo "No default or passed startdate arg so only mint_one_token commands will be able to mint, unless updated by running the following:"
