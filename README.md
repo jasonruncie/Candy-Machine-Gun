@@ -54,6 +54,12 @@ On devnet, the script will airdrop 1 SOL for you if there is no balance, however
 
 *Note: This project does not include an id.json file in it.*
 
+If you do not have an id.json file you've been working with, just look in ./shared a little bit after running "Compose Up" and there will be a new one there. This is what will be the authoitative key for the Candy Machine.  To use this wallet in Phantom, open it with a text editor, there will be a bunch of numbers in brackets [1 2 3 ... 234 235]
+
+Copy the whole thing, including the brackets. Go to Phantom, click the 3-bars/hamburger button in the top-left, click Add / Connect Wallet.
+Click on Import Private Key, then paste that string into the Private Key field, and give it a name you will recognize, such as candywallet.
+Then click on the gear in the bottom-right of Phantom, scroll down to Change Network, click that, then click Devnet - assuming you are testing on devbet.
+
 Then when you are ready for mainnet, just send some SOL to the wallet you are using and change "devnet" to "mainnet-beta" in the createCandyMachine.sh call. You can run the script yourself in the Terminal, or use Compose Restart to cause the script to run again with the arguments in the Dockerfile ENTRYPOINT. 
 
 You should test to confirm that everything is as desired using devnet, then run the whole thing a few more times on devnet, then go to mainnet-beta. The actual mainnet-beta network is less stable than devnet, so some transactions will likely run into timeouts at some points, unless you are using dedicated resources (RPC Servers.) I will be continueing to test and add more checks \ fault-tolerance over time.
