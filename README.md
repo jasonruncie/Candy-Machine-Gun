@@ -16,14 +16,23 @@ Someone with just a little familiarity with VSCode or Docker or a Terminal/Shell
 
 You can use this as a launching point to start with a working Candy Machine solution, and then work your way through all of the steps to gain an understanding of what everything does if that is your goal.
 
-It is meant to be run with Docker (Compose), which can be downloaded from https://www.docker.com/get-started.
+It is meant to be run with Docker (Compose), which can be downloaded from https://docs.docker.com/engine/install/.
 
-If you are comfortable with a bash shell you should be able to follow the steps involved and run the process directly on your system instead of in Docker. Systems other than Ubuntu/Debian will likely require minor changes to various commands.
+																																																												  
 
+*Don't skip the Post-installation options. Particularly on linux:*
+```bash
+ sudo groupadd docker
+ sudo usermod -aG docker $USER
+ newgrp docker
+```
 ## Docker
-Docker works by running commands that are written in the Dockerfile to produce an image that can then be run as a container / instance. I am not a Docker expert, so there may be better ways to do some of the processes I'm doing, but it makes sense to me and more importantly, it works. There are many details in the comments of the Dockerfile.
+Docker works by running commands that are written in the Dockerfile to produce an image that can then be run as a container / instance. I am not a Docker expert, so there may be better ways to do some of the processes I'm doing, but it makes sense to me and more importantly, it works. 
 
-The Dockerfile could be built directly, but using docker-compose is best. The compose file will automatically run the container with the shared folder configured so that it will be accessible to both your host OS and the container. You can run the Dockerfile with volume options directly, but if you want to do that, you should be capable of figuring it out yourself.
+There are many details in the comments of the Dockerfile. The Dockerfile could be built directly, but using docker-compose is best. The using compose will automatically run the container with the shared folder configured so that it will be accessible to both your host OS and the container. You can run the Dockerfile with volume options directly if you prefer.
+
+## Not Using Docker
+If you are comfortable with a bash shell you should be able to follow the steps involved and run the process directly on your system instead of in Docker. Systems other than Ubuntu/Debian will likely require minor changes to various commands. 
 
 ## VSCode
 I have primarily used VSCode https://code.visualstudio.com/ for developing this, so this has all been built / tested using that. VSCode is not required, but if you aren't familiar with any of these tools or types of files then you should get VSCode. There is an extension (https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-docker) for VSCode that simplifies working with Docker, which is helpful if you aren't familiar with it. 
