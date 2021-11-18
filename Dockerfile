@@ -61,9 +61,12 @@ COPY ./createCandyMachine.sh ./.env /app/
 
 # Below entry point automatically builds/deploys the Candy Machine and runs a local instance of the candy-machine-mint project when the container starts.
 # See createCandyMachine.sh to learn about the arguments and process.
-ENTRYPOINT [ "bash", "./createCandyMachine.sh", "--network", "devnet", "--price", "0.1", "--num_to_mint", "1", "--startdate", "24 Sep 2021 12:00:00 GMT" ]
+# ENTRYPOINT [ "bash", "./createCandyMachine.sh", "--network", "devnet", "--price", "0.1", "--num_to_mint", "1", "--startdate", "24 Sep 2021 12:00:00 GMT" ]
 
 # If you don't want to automatically run the script when the container start, use the below entry point instead (comment out the ENTRYPOINT above and uncomment this one)
 # At a bash prompt you can run the script ("bash ./createCandyMachine.sh"), or directly call any of commands provided by solana or metaplex.
 # If you do not specify an ENTRYPOINT then a local solana node will start automatically, unless you change the base image.
-#ENTRYPOINT [ "bash"]
+ENTRYPOINT [ "bash"]
+
+## 11-17-21 Changed to default to bash instead of running the script.  Due to current arweave slowness, running the script will likely fail on the verify.  
+## Manually run the commands, and after upload, wait until the links are working when you test in a browser (not showing Not Found) before running verify.
