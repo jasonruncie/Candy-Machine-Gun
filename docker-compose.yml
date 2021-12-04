@@ -1,10 +1,13 @@
 version: "3.9"  # optional since v1.27.0
 services:
   cm:
-    build: .
+    build: .         # Build the Dockerfile found in the same directory.
     stdin_open: true # docker run -i
     tty: true        # docker run -t
     ports:
+      # If you want to run more than one instance or have something else using port 3000 you can change this here
+      # Just be aware that the link displayed in the logs will not be correct, you will need to use the host port specified
+      # Below format is "HOST:CONTAINER" - host is what you will access, container is the port that the react app uses
       - "3000:3000"
     volumes:
       - ./shared:/app/shared

@@ -1,22 +1,28 @@
 #!/bin/bash
 
+# Load environemnt entries
+source ~/.bashrc
+
 TIMESTAMP=$(date +%s)
 
 ########################
 ## Optional Arguments ##
 
-#   --price       - This is the price that the candy machine will be set to. 
-#   --startdate   - This is the start date that the Candy Machine will be set to use. 
-#   --num_to_mint - Specify a number of mint_one_token commands to run. 
-#   --network     - Specify the network to use. Options are devnet, testnet, or mainnet-beta
-#   --cachefile   - Advanced Feature - Pass the path to an existing cacheFile for the Candy Machine to use. 
-#                   This can be used to continue a previously interrupted upload or to use a (potentially modified) cache from a previous CM run.
-#                   This is not needed if just continueing the most recent run, or if edits were in place at /app/shared/.cache/[cacheFile]
-#                   The full path to the file is needed here. The Candy Machine CLI expects the file to be in the format [NETWORK]-[whatever_name]
-#                   whatever_name cannot have any dashes or slashes [-/]
-#                   To reduce the risk of a rogue script messing up which network you are going to, you will need to ensure the file is named with the network you wish to use it on
-#                   If you have a cache file such as "devnet-cache1633279043" that you have modified to re-use on mainnet-beta, you will have to rename it to mainnet-beta-cache1633279043 first.
-#                   The same applies for going the other way, or to/from testnet
+#   --price        - This is the price that the candy machine will be set to. 
+#   --startdate    - This is the start date that the Candy Machine will be set to use. 
+#   --num_to_mint  - Specify a number of mint_one_token commands to run. 
+#   --network      - Specify the network to use. Options are devnet, testnet, or mainnet-beta
+#   --cachefile    - Advanced Feature - Pass the path to an existing cacheFile for the Candy Machine to use. 
+#                    This can be used to continue a previously interrupted upload or to use a (potentially modified) cache from a previous CM run.
+#                    This is not needed if just continueing the most recent run, or if edits were in place at /app/shared/.cache/[cacheFile]
+#                    The full path to the file is needed here. The Candy Machine CLI expects the file to be in the format [NETWORK]-[whatever_name]
+#                    whatever_name cannot have any dashes or slashes [-/]
+#                    To reduce the risk of a rogue script messing up which network you are going to, you will need to ensure the file is named with the network you wish to use it on
+#                    If you have a cache file such as "devnet-cache1633279043" that you have modified to re-use on mainnet-beta, you will have to rename it to mainnet-beta-cache1633279043 first.
+#                    The same applies for going the other way, or to/from testnet
+#   --github_page  - URL for github page
+#   --github_user  - Username to use to interact with github pages
+#   --github_token - Token to use to interact with github pages
 
 ###########################
 ## Example direct calls: ##
@@ -31,6 +37,10 @@ network=${network:-'devnet'}
 startdate=${startdate:-''}
 num_to_mint=${num_to_mint:-0}
 cachefile=${cachefile:-''}
+# github_page=${github_page:-'jasonruncie'}
+# github_user=${github_user:-'jasonruncie'}
+# # TODO: Cleanup
+# github_token=${github_token:-'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'}
 
 echo "Parameters:"
 while [ $# -gt 0 ]; do
@@ -42,23 +52,11 @@ while [ $# -gt 0 ]; do
     shift
 done
 
-
-##################################
-## Prepare Environment for Node ##
-
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-
 # Create new Run directory. You will be able to access files such as logs in this folder through your OS in "shared" in the project directory.
-
 RUNNAME=$NETWORK-$TIMESTAMP
 RUNDIR=/app/shared/runs/$RUNNAME
 mkdir -p $RUNDIR
 echo "Created Run Directory: $RUNDIR"
-
-
 
 if [[ $CACHEFILE == "" ]]; then 
     echo "No cachefile parameter passed, so will be generating a new cache file"
@@ -83,26 +81,28 @@ else
 fi
 
 # TODO: Add csv->json and layers->images / create art features
+# TODO: Add WrathionTBP https://hackmd.io/@Solseum/HJEfeFDNt
+# TODO: Investigate https://github.com/CryptoOutcasts/Candy_Machine_Whitelist_Site
 
 #########################
 ## Check images / json ##
-if [[ $(find /app/shared/images/ -type f -name '*.json' |  xargs jq -r '.symbol' | sort | uniq -c | awk '{print length($2)}' | sort -nr | head -n1) -gt 10 ]]; then 
-    echo "ALERT! Your images metadata is not correct "
+if [[ $(find /app/shared/assets/ -type f -name '*.json' |  xargs jq -r '.symbol' | sort | uniq -c | awk '{print length($2)}' | sort -nr | head -n1) -gt 10 ]]; then 
+    echo "ALERT! Your assets metadata is not correct "
     echo "!!  You have symbols with more than the max 10 characters !!"
     echo "   Num | symbol"
-    find ./shared/images/ -type f -name '*.json' |  xargs jq -r '.symbol' | sort | uniq -c
+    find ./shared/assets/ -type f -name '*.json' |  xargs jq -r '.symbol' | sort | uniq -c
     echo "You need to shorten your symbol"
     exit -1
 fi
 
-# The verify_token_metadata command currently has some specific path requirements. 
-cd /app
-echo "node /app/cm/build/candy-machine-cli.js verify_token_metadata ./shared/images/" > $RUNDIR/1-jsonVerifyLog.txt
-node /app/cm/build/candy-machine-cli.js verify_token_metadata ./shared/images/ 2>&1 | tee -a $RUNDIR/1-jsonVerifyLog.txt
-# TODO Add verification / checks
-
 # Changing to the shared folder so that the .cache file will be located on the mounted folder and acessible from host OS.
 cd /app/shared
+
+echo "node /app/metaplex/js/packages/cli/build/candy-machine-cli.js verify_token_metadata ./assets/" > $RUNDIR/1-jsonVerifyLog.txt
+node /app/metaplex/js/packages/cli/build/candy-machine-cli.js verify_token_metadata ./assets/ 2>&1 | tee -a $RUNDIR/1-jsonVerifyLog.txt
+# TODO Add verification / checks
+
+
 
 ##################
 ## Solana steps ##
@@ -153,8 +153,8 @@ fi
 
 # Upload images and json to arweave
 echo "Upload files to arweave and create the cache."
-echo "node /app/cm/build/candy-machine-cli.js upload /app/shared/images/ --env $NETWORK --keypair /root/.config/solana/id.json -c $CACHEFILENAME -l trace" | tee $RUNDIR/2-uploadLog.txt
-node /app/cm/build/candy-machine-cli.js upload /app/shared/images/ --env $NETWORK --keypair /root/.config/solana/id.json -c $CACHEFILENAME -l trace  2>&1 | tee -a $RUNDIR/2-uploadLog.txt
+echo "node /app/metaplex/js/packages/cli/build/candy-machine-cli.js upload /app/shared/assets/ --env $NETWORK --keypair /root/.config/solana/id.json -c $CACHEFILENAME -l trace" | tee $RUNDIR/2-uploadLog.txt
+node /app/metaplex/js/packages/cli/build/candy-machine-cli.js upload /app/shared/assets/ --env $NETWORK --keypair /root/.config/solana/id.json -c $CACHEFILENAME -l trace  2>&1 | tee -a $RUNDIR/2-uploadLog.txt
 
 #TODO Check log file
 # Potential Errors to watch for:
@@ -163,14 +163,14 @@ node /app/cm/build/candy-machine-cli.js upload /app/shared/images/ --env $NETWOR
 
 # Veryify uploads
 echo "Verify the uploads"
-echo "node /app/cm/build/candy-machine-cli.js verify --env $NETWORK --keypair /root/.config/solana/id.json -c $CACHEFILENAME -l trace" | tee $RUNDIR/3-verifyLog.txt
-node /app/cm/build/candy-machine-cli.js verify --env $NETWORK --keypair /root/.config/solana/id.json -c $CACHEFILENAME -l trace  2>&1 | tee -a $RUNDIR/3-verifyLog.txt
+echo "node /app/metaplex/js/packages/cli/build/candy-machine-cli.js verify --env $NETWORK --keypair /root/.config/solana/id.json -c $CACHEFILENAME -l trace" | tee $RUNDIR/3-verifyLog.txt
+node /app/metaplex/js/packages/cli/build/candy-machine-cli.js verify --env $NETWORK --keypair /root/.config/solana/id.json -c $CACHEFILENAME -l trace  2>&1 | tee -a $RUNDIR/3-verifyLog.txt
 #TODO Check log file
 
 # Create the Candy Machine
 echo "Creating Candy Machine"
-echo "node /app/cm/build/candy-machine-cli.js create_candy_machine -e $NETWORK --keypair /root/.config/solana/id.json -p $PRICE -c $CACHEFILENAME -l trace" | tee $RUNDIR/4-createCMLog.txt
-node /app/cm/build/candy-machine-cli.js create_candy_machine -e $NETWORK --keypair /root/.config/solana/id.json -p $PRICE -c $CACHEFILENAME -l trace 2>&1 | tee -a $RUNDIR/4-createCMLog.txt
+echo "node /app/metaplex/js/packages/cli/build/candy-machine-cli.js create_candy_machine -e $NETWORK --keypair /root/.config/solana/id.json -p $PRICE -c $CACHEFILENAME -l trace" | tee $RUNDIR/4-createCMLog.txt
+node /app/metaplex/js/packages/cli/build/candy-machine-cli.js create_candy_machine -e $NETWORK --keypair /root/.config/solana/id.json -p $PRICE -c $CACHEFILENAME -l trace 2>&1 | tee -a $RUNDIR/4-createCMLog.txt
 #TODO Check log file
 
 # Get the config id of the Candy Machine from the cache. 
@@ -186,8 +186,8 @@ while [ $i -lt $NUM_TO_MINT ]
 do
     # Use this to directly mint one token - mostly for testing, but can be used to mint tokens for special purposes.
     # Should work even before setting start date
-    echo "node /app/cm/build/candy-machine-cli.js mint_one_token -e $NETWORK -k /root/.config/solana/id.json -c $CACHEFILENAME -l trace" | tee $RUNDIR/5-mintoneLog-$i.txt
-    node /app/cm/build/candy-machine-cli.js mint_one_token -e $NETWORK -k /root/.config/solana/id.json -c $CACHEFILENAME -l trace  2>&1 | tee -a $RUNDIR/5-mintoneLog-$i.txt
+    echo "node /app/metaplex/js/packages/cli/build/candy-machine-cli.js mint_one_token -e $NETWORK -k /root/.config/solana/id.json -c $CACHEFILENAME -l trace" | tee $RUNDIR/5-mintoneLog-$i.txt
+    node /app/metaplex/js/packages/cli/build/candy-machine-cli.js mint_one_token -e $NETWORK -k /root/.config/solana/id.json -c $CACHEFILENAME -l trace  2>&1 | tee -a $RUNDIR/5-mintoneLog-$i.txt
     #TODO Check log file
     i=$(( $i + 1 ))
 done
@@ -197,12 +197,12 @@ if [[ $STARTDATE != '' ]]; then
     # Set the startdate for the Candy Machine
     # A past date is fine if you want access right away
     echo "Setting startdate to $STARTDATE"
-    echo "node /app/cm/build/candy-machine-cli.js update_candy_machine -e $NETWORK -k /root/.config/solana/id.json -d $STARTDATE -c $CACHEFILENAME -l trace" | tee $RUNDIR/6-updateStartDateLog.txt
-    node /app/cm/build/candy-machine-cli.js update_candy_machine -e $NETWORK -k /root/.config/solana/id.json -d "$STARTDATE" -c $CACHEFILENAME -l trace 2>&1 | tee -a $RUNDIR/6-updateStartDateLog.txt
+    echo "node /app/metaplex/js/packages/cli/build/candy-machine-cli.js update_candy_machine -e $NETWORK -k /root/.config/solana/id.json -d $STARTDATE -c $CACHEFILENAME -l trace" | tee $RUNDIR/6-updateStartDateLog.txt
+    node /app/metaplex/js/packages/cli/build/candy-machine-cli.js update_candy_machine -e $NETWORK -k /root/.config/solana/id.json -d "$STARTDATE" -c $CACHEFILENAME -l trace 2>&1 | tee -a $RUNDIR/6-updateStartDateLog.txt
     #TODO Check log file
 else
     echo "No default or passed startdate arg so only mint_one_token commands will be able to mint, unless updated by running the following:"
-    echo "node /app/cm/build/candy-machine-cli.js update_candy_machine -e $NETWORK -k /root/.config/solana/id.json -d "YOUR_START_DATE" -c $CACHEFILENAME -l trace "
+    echo "node /app/metaplex/js/packages/cli/build/candy-machine-cli.js update_candy_machine -e $NETWORK -k /root/.config/solana/id.json -d "YOUR_START_DATE" -c $CACHEFILENAME -l trace "
 fi
 
 
@@ -228,11 +228,25 @@ if [[ $STARTDATE != '' ]]; then
     sed -i "s~RPC_HOST_PLACEHOLDER~$RPC_HOST~g" $RUNDIR/.env
     sed -i "s/ADDRESS_PLACEHOLDER/\"$ADDRESS\"/g" $RUNDIR/.env
 
-    cp $RUNDIR/.env /app/candy-machine-mint
+    cp $RUNDIR/.env /app/candy-machine-mint/
 
     cd /app/candy-machine-mint
+    ### STEPS
+    # Remove .git
+    # rm -r ./.git
+    # mv /app/
+    # Add to repo  github_user github_token
+    # yarn add gh-pages
+    # Edit package.json
+    #gh config set git_protocol ssh --host github.com
+    #npm run deploy
 
     HTTPS=true npm start 
+
 else
     echo "Not starting candy-machine-mint since no start date set."
 fi
+
+# Keep container runnning
+echo "Leaving container running at a bash prompt. You can 'Attach Shell' now"
+bash

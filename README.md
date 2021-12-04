@@ -18,14 +18,14 @@ You can use this as a launching point to start with a working Candy Machine solu
 
 It is meant to be run with Docker (Compose), which can be downloaded from https://docs.docker.com/engine/install/.
 
-																																																												  
-
-*Don't skip the Post-installation options. Particularly on linux:*
+*Don't skip any Post-installation steps.*
+*On Ubuntu:*
 ```bash
  sudo groupadd docker
  sudo usermod -aG docker $USER
  newgrp docker
 ```
+
 ## Docker
 Docker works by running commands that are written in the Dockerfile to produce an image that can then be run as a container / instance. I am not a Docker expert, so there may be better ways to do some of the processes I'm doing, but it makes sense to me and more importantly, it works. 
 
@@ -75,7 +75,7 @@ You should test to confirm that everything is as desired using devnet, then run 
 
 
 ## Signing
-By default, the Candy Machine program will sign the NFTs created, however all creators involved should sign them as well. I am still building up an understanding of this process, more to come...
+By default, the Candy Machine program will sign the NFTs created, however all creators involved should sign them as well. You cannot sign any NFTs until they are minted, but you can run it more than once if desired, as new NFTs are minted.
 
 ## Minting
 If you pass a number greater than 0 to the createCandyMachine.sh call for num_to_mint, then before even setting a start date, the process will mint that many tokens, which will go into the id.json account. By default, this project will create two NFTs (the sample files,) and use mint_one_token to mint one of them to the Treasury wallet, and launch the Candy-Machine-Mint web button so that you can mint one from any browser wallet.
