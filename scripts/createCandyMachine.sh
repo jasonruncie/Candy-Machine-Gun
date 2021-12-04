@@ -37,10 +37,6 @@ network=${network:-'devnet'}
 startdate=${startdate:-''}
 num_to_mint=${num_to_mint:-0}
 cachefile=${cachefile:-''}
-# github_page=${github_page:-'jasonruncie'}
-# github_user=${github_user:-'jasonruncie'}
-# # TODO: Cleanup
-# github_token=${github_token:-'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'}
 
 echo "Parameters:"
 while [ $# -gt 0 ]; do
@@ -231,15 +227,6 @@ if [[ $STARTDATE != '' ]]; then
     cp $RUNDIR/.env /app/candy-machine-mint/
 
     cd /app/candy-machine-mint
-    ### STEPS
-    # Remove .git
-    # rm -r ./.git
-    # mv /app/
-    # Add to repo  github_user github_token
-    # yarn add gh-pages
-    # Edit package.json
-    #gh config set git_protocol ssh --host github.com
-    #npm run deploy
 
     HTTPS=true npm start 
 
