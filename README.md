@@ -16,7 +16,7 @@ And a special thanks to https://twitter.com/sadbearsnft for sponsoring this proj
 ## 1. Install git ##
 If you don't already have Git, you can find install info for your system here: https://git-scm.com/downloads 
 
-- On Windows, just download from https://git-scm.com/download/win and run the installer. You can just continue through the setup leaving the default options unless you know you want something different.
+- On Windows, just download and run the installer from https://git-scm.com/download/win. Just continue through the setup, leaving the default options, unless you know that you want something different.
 
 - On MacOS, use: ```brew install git```
 - On Ubuntu, use: ```sudo apt-get install git```
@@ -40,23 +40,23 @@ If you don't already have Docker, you can view installation instructions and dow
   sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
   sudo chmod +x /usr/local/bin/docker-compose
   ```
-  Or read through the link to use other options, but be sure to also instal docker-compose and follow the Post-installation steps, in particular running the following:
+  Or read through [the guide](https://docs.docker.com/engine/install/) to use other options, but be sure to also install docker-compose and follow the Post-installation steps, in particular running the following:
   ```bash
   sudo groupadd docker
   sudo usermod -aG docker $USER
   newgrp docker
   ```
-  Followed by restarting or log out/in.
+  Followed by restarting or log out and back in.
 
 ## 3. Install VSCode and the Docker Extension ##
 
 If you don't already have VSCode you can install it from https://code.visualstudio.com/
 
-Selecting all options on the Select Additional Tasks screen, especially the two that Add "Open with Code" to your context menu.
+You should select all options on the Select Additional Tasks screen, especially the two that Add "Open with Code" to your context menu.
 
 On Ubuntu "```sudo snap install code --classic```" is a quick option.
 
-You should also install the Docker and Remote - Containers extensions from Microsoft. You can search for then in the extensions panel or find them at these links:
+You should also install the "Docker" and "Remote - Containers" extensions from Microsoft. You can search for them in the extensions panel or find them at these links:
  - https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-docker
  - https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers
 
@@ -65,7 +65,7 @@ On Windows, I recommend changing the default terminal profile from Powershell to
 
 ## 4. Clone this repo ##
 
-Run this command in the bash or git bash terminal:
+Run this command in the "bash" or "git bash" terminal:
 
 ```git clone https://github.com/jasonruncie/Candy-Machine-Gun.git```
 
@@ -73,16 +73,18 @@ Run this command in the bash or git bash terminal:
 You may be prompted to verify that you trust the source of the code. Obviously choose that you do. :)
 
 ## 6. Start the Docker image ##
-In VSCode simply right click on "docker-compose.yml" in the Explorer, or inside the editor after opening it, and choose "Compose Up" to launch a demo Candy Machine and local Candy-Machine-Mint page.
+In VSCode, right click on "docker-compose.yml" in the Explorer, or inside the editor after opening it, and choose "Compose Up" to launch a demo Candy Machine and local Candy-Machine-Mint page.
 
-Running compose up may take several minutes, but once the temrinal says:
+Running compose up may take several minutes, but you will know the image build has completed once the terminal says:
 > "**Terminal will be reused by tasks, press any key to close it.**" 
 
-Then the image build has completed completed, in the Docker extension explorer there will be a new Image and a running Container: candy-machine-gun. 
+In the Docker extension Explorer there will be a new Image and a running Container: candy-machine-gun. 
 
-Right clicking on the container and choosing "View Logs" (after it has started) will let you see the script processing, and eventually the local link to the mint page. Depending on your system, the localhost or the IP based link may work better, so if one fails to connect, try the other.  The app requires SSL, so you may get a security warning from your browser due to lack of an actual cert. You may need to expand "Advanced" or "More info..." to confirm that you do wish to proceed to the page. On a real hosted website with SSL certificates this would not be the case.
+Right click on the container and choose "View Logs" (after it has started) to see the script processing, and eventually the local link to the mint page. Depending on your system, the localhost or the IP based link may work better, so if one fails to connect, try the other.  The app requires SSL, so you may get a security warning from your browser due to lack of an actual cert. You may need to expand "Advanced" or "More info..." to confirm that you do wish to proceed to the page. On a real hosted website with SSL certificates this will not be an issue.
 
-In VSCode in the context (right-click) menu for the container, there is also an option to "Attach Shell" which will bring you to a Terminal inside your running container. In that Terminal you can inspect the results of the build process and run solana / metaplex commands. With the Remote - Containers plugin you can run VSCode inside of the container, so you can more easily access the files and terminals.
+Also when you right click on the container, there is an option to "Attach Shell" which will bring you to a Terminal inside your running container. In that Terminal you can inspect the results of the build process and run solana / metaplex commands. 
+
+With the "Remote - Containers" plugin there is also an option to "Attach Vidual Studio Code" which will open an instance of VSCode that is essentially running inside of the container, so you can more easily access the files and terminals. I recommend doing this if you wish to explore CM more.
 
 ## 7. Make it your own ##
 If you followed these steps as they are, you should now have a complete and working CM system and a small CM on devnet with some of my images.  You can replace the files in shared/assets with your own and in the terminal inside docker, go to /app/shared and run something like the following:
@@ -96,10 +98,10 @@ If you have benefitted from my work I would love to get one of your NFTs for my 
 Feel free to message me [@Jason_Runcie](https://twitter.com/Jason_Runcie) on twitter, or stop in at my [discord](https://discord.gg/g4EVxqPS) server if you have any questions or issues with this process.
 
 # Additional Info #
-## Shared Folder
+## Shared Folder ##
 The shared folder allows you to easily use one copy of data/files/images throughout several iterations of building / testing Candy Machines. Then you can switch out the files for creating new Candy Machines without re-building the image. Every run of the createCandyMachine.sh script will create a folder in shared/runs that will hold details and logs produced during the run.
 
-## Solana wallet
+## Solana wallet ##
 A funded Solana wallet is needed to create a Candy Machine.  You can add an existing id.json file to ./shared or a new one will be created for you using `solana-keygen new` during the first run.
 
 On devnet, the script will airdrop 1 SOL for you if there is no balance, however the airdrop is limited and may. not always complete. The accout in the id.json file will be retained and reused for additional runs, even if you requild the image, unless you remove it from ./shared. You can send more SOL to that wallet (which will be displayed in the logs) using https://www.spl-token-ui.com/#/sol-airdrop or transfer from another wallet. 
@@ -117,15 +119,15 @@ Then when you are ready for mainnet, just send some SOL to the wallet you are us
 You should test to confirm that everything is as desired using devnet, then run the whole thing a few more times on devnet, then go to mainnet-beta. The actual mainnet-beta network is less stable than devnet, so some transactions will likely run into timeouts at some points, unless you are using dedicated resources (RPC Servers.) I will be continueing to test and add more checks \ fault-tolerance over time.
 
 
-## Signing
+## Signing ##
 By default, the Candy Machine program will sign the NFTs created, however all creators involved should sign them as well. You cannot sign any NFTs until they are minted, but you can run sign or sign_all more than once if desired, as new NFTs are minted.
 
-## Minting
+## Minting ##
 If you pass a number greater than 0 to the createCandyMachine.sh call for num_to_mint, then before even setting a start date, the process will mint that many tokens, which will go into the id.json account. By default, this project will create a CM with three assets, then use mint_one_token to mint one of them to the Treasury wallet, and finally launch the Candy-Machine-Mint page so that you can mint one from any browser wallet.
 
 This mint page is just for demo purposes. If you don't already have a minting page solution in mind, the easiest option is to fork https://github.com/exiled-apes/candy-machine-mint, then sign up for a free [Vercel](https://vercel.com/) account and point it to your forked repo. Use the .env file that is produced for your CM and add the values to the vercel environment variables.
 
-## Images
+## Images ##
 Your images and JSON files should all go in ./shared/assets 
 I have included fully functioning example files in this project, which can be used to test and model your metadata after. Your image files should be named 0.png through n-1.png, unless you *know* what you are doing.
 
@@ -134,10 +136,10 @@ Inside the JSON files, there is an "image" key. This (along with an entry in fil
 
 By default arweave is used.  Support has been added for IPFS and AWS, but I have not tried those.
 
-## Withdraw
+## Withdraw ##
 Candy Machine now supports withdrawing the SOL that went into the config account.  The config account is what holds the data on-chain that defines the NFTs that will be minted. Once you are done with minting, you can run withdraw to get that SOL back and the config account data will be wiped. 
 
-## Metadata
+## Metadata ##
 
 There are limits on some of the metadata values. 
 | Field    | Limit |
