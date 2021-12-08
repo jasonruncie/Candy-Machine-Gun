@@ -6,6 +6,11 @@ source ~/.bashrc
 TIMESTAMP=$(date +%s)
 
 ########################
+###### IMPORTANT! ######
+# You should run all commands from /app/shared
+# Make sure your prompt looks like root@<CONTAINER_ID>:/app/shared#
+
+########################
 ## Optional Arguments ##
 
 #   --price        - This is the price that the candy machine will be set to. 
@@ -26,8 +31,8 @@ TIMESTAMP=$(date +%s)
 
 ###########################
 ## Example direct calls: ##
-# bash ./createCandyMachine.sh --network devnet --price 0.1 --num_to_mint 1 --startdate "24 Sep 2021 12:00:00 GMT"
-# bash ./createCandyMachine.sh --network mainnet-beta --price 1 --num_to_mint 0 --startdate "24 Sep 2021 12:00:00 GMT"
+# bash ../createCandyMachine.sh --network devnet --price 0.1 --num_to_mint 1 --startdate "24 Sep 2021 12:00:00 GMT"
+# bash ../createCandyMachine.sh --network mainnet-beta --price 1 --num_to_mint 0 --startdate "24 Sep 2021 12:00:00 GMT"
 
 ########################
 ## Process parameters ##
@@ -201,7 +206,11 @@ else
     echo "node /app/metaplex/js/packages/cli/build/candy-machine-cli.js update_candy_machine -e $NETWORK -k /root/.config/solana/id.json -d "YOUR_START_DATE" -c $CACHEFILENAME -l trace "
 fi
 
-
+# Erase the Candy Machine config - get your SOL back
+echo "Run the below command to withdraw from all Candy Machines created by the wallet passed, this should not actually run unless you uncomment the command below in createCandyMachine.sh"
+echo "node /app/metaplex/js/packages/cli/build/candy-machine-cli.js withdraw -e $NETWORK --keypair /root/.config/solana/id.json -l trace" | tee $RUNDIR/7-withdrawLog.txt
+# node /app/metaplex/js/packages/cli/build/candy-machine-cli.js withdraw -e $NETWORK --keypair /root/.config/solana/id.json -l trace 2>&1 | tee -a $RUNDIR/7-withdrawLog.txt
+# The actual command above is commented out, but whenever you are ready to actually do it, you can find the commnad in the log files 
 
 #######################
 ## Candy-Machine-Mint

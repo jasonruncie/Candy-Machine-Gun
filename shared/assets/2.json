@@ -1,0 +1,42 @@
+{
+  "name": "JR Ambigrams #3",
+  "symbol": "{run:c}",
+  "description": "Buildspace ambigram",
+  "seller_fee_basis_points": 3333,
+  "image": "image.png",
+  "animation_url": "image.png",
+  "external_url": "https://github.com/jasonruncie",
+  "attributes": [
+    {
+      "trait_type": "Background",
+      "value": "Transparent"
+    },
+    {
+      "trait_type": "Text",
+      "value": "Buildspace"
+    },
+    {
+      "trait_type": "Text Color",
+      "value": "Blue-Red"
+    }
+  ],
+  "collection": {
+    "name": "JR Ambigrams",
+    "family": "Jason Runcie"
+  },
+  "properties": {
+    "files": [
+      {
+        "uri": "image.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image",
+    "creators": [
+      {
+        "address": "JASoNvc2K2jpXm13mGMmhN9ktevpS4PDijayrp8sLJrw",
+        "share": 100
+      }
+    ]
+  }
+}

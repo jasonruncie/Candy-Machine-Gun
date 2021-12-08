@@ -16,16 +16,14 @@ git clone https://github.com/metaplex-foundation/metaplex.git /app/metaplex
  
 ######################
 ## If you need a specific pull request
-# cd /app/metaplex
+cd /app/metaplex
 git fetch origin pull/985/head:betterverify
 git checkout betterverify
 
 
-# Make a copy of the cli package to work with 
-cd /app/metaplex/js/packages/cli
-
 # Install dependencies and build metaplex.
 # This may take a while and have some warnings, but should succeed overall
+cd /app/metaplex/js/packages/cli
 yarn install
 yarn build
 

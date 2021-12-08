@@ -1,7 +1,8 @@
 version: "3.9"  # optional since v1.27.0
 services:
   cm:
-    build: .         # Build the Dockerfile found in the same directory.
+    image: jasonruncie/candy-machine-gun:latest
+    # build: .       # Build the Dockerfile found in the same directory.
     stdin_open: true # docker run -i
     tty: true        # docker run -t
     ports:

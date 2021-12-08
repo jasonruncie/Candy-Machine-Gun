@@ -17,15 +17,11 @@
 # If you have an ubuntu system you want to use, you should be able to just run the commands / processes from this file and the scipts and skip docker.
 # For MacOS or Windows you may need to make some modifications, depending on the tools you use.
 
+# For the fastest process, use my docker image which is based on this Dockerfile, using the below solana base image.
+FROM jasonruncie/candy-machine-gun:latest
 
-# Start by using the latest stable solana base image. This should be pointing to the official solanalabs/solana docker image.
-# When first running Candy-Machine-Gun, the latest stable solana image will be cached.  
-# If you want to update to a newer version you can specify the version here or remove the cache.
-FROM solanalabs/solana:stable
-
-# The solana docker image exposes ports to be used for running a node. The ENTRYPOINT at the end of this Dockerfile prevents the node from starting, but the ports are still exposed. 
-# If that is an issue for you, can change the reference from solana to ubuntu (see below), and uncomment RUN and ENV lines in Install Solana section below
-# FROM ubuntu
+# If you prefer a slower process that you can control more of and only uses official repos, use the below FROM statement rather than the above.
+# FROM solanalabs/solana:stable
 
 # Install some required / useful tools, feel free to change nano to your preferred editor if you know what you are doing.
 RUN apt update -y && apt install -y \
@@ -48,9 +44,8 @@ WORKDIR /app
 
 ####################
 #  Install Solana  #
-# Note: You only need to use this if you switched to ubuntu as the base image
-# RUN sh -c "$(curl -sSfL https://release.solana.com/stable/install)"
-# ENV PATH="/root/.local/share/solana/install/active_release/bin:${PATH}"
+RUN sh -c "$(curl -sSfL https://release.solana.com/stable/install)"
+ENV PATH="/root/.local/share/solana/install/active_release/bin:${PATH}"
 
 ####################
 # Install Node/ENV #
@@ -77,9 +72,11 @@ EXPOSE 3000
 
 COPY ./scripts/createCandyMachine.sh /app/
 
+WORKDIR /app/shared
+
 # Below entry point automatically builds/deploys the Candy Machine and runs a local instance of the candy-machine-mint project when the container starts.
 # See createCandyMachine.sh to learn about the arguments and process.
-ENTRYPOINT [ "bash", "./createCandyMachine.sh", "--network", "devnet", "--price", "0.1", "--num_to_mint", "1", "--startdate", "24 Sep 2021 12:00:00 GMT" ]
+ENTRYPOINT [ "bash", "../createCandyMachine.sh", "--network", "devnet", "--price", "0.1", "--num_to_mint", "1", "--startdate", "24 Sep 2021 12:00:00 GMT" ]
 
 # If you don't want to automatically run the script when the container starts, use the below entry point instead (comment out the ENTRYPOINT above and uncomment this one)
 # At a bash prompt you can run the script ("bash ./createCandyMachine.sh"), or directly call any commands provided by solana or metaplex.
