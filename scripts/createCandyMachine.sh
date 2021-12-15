@@ -5,8 +5,17 @@ source ~/.bashrc
 
 TIMESTAMP=$(date +%s)
 
+
+
 ########################
 ###### IMPORTANT! ######
+
+
+## Change this to your RPC link. See the README.md for details.
+RPCLINK=https://api.devnet.solana.com 
+# You could use the below if doing a small set on mainnet
+# RPCLINK=https://api.mainnet-beta.solana.com
+
 # You should run all commands from /app/shared
 # Make sure your prompt looks like root@<CONTAINER_ID>:/app/shared#
 
@@ -102,7 +111,10 @@ cd /app/shared
 echo "node /app/metaplex/js/packages/cli/build/candy-machine-cli.js verify_token_metadata ./assets/" > $RUNDIR/1-jsonVerifyLog.txt
 node /app/metaplex/js/packages/cli/build/candy-machine-cli.js verify_token_metadata ./assets/ 2>&1 | tee -a $RUNDIR/1-jsonVerifyLog.txt
 # TODO Add verification / checks
-
+## get status ##
+status=$?
+## take some decision ## 
+[ $status -eq 0 ] && echo "$cmd command was successful" || echo "$cmd failed"
 
 
 ##################
@@ -154,8 +166,8 @@ fi
 
 # Upload images and json to arweave
 echo "Upload files to arweave and create the cache."
-echo "node /app/metaplex/js/packages/cli/build/candy-machine-cli.js upload /app/shared/assets/ --env $NETWORK --keypair /root/.config/solana/id.json -c $CACHEFILENAME -l trace" | tee $RUNDIR/2-uploadLog.txt
-node /app/metaplex/js/packages/cli/build/candy-machine-cli.js upload /app/shared/assets/ --env $NETWORK --keypair /root/.config/solana/id.json -c $CACHEFILENAME -l trace  2>&1 | tee -a $RUNDIR/2-uploadLog.txt
+echo "node /app/metaplex/js/packages/cli/build/candy-machine-cli.js upload /app/shared/assets/ --env $NETWORK -r $RPCLINK --keypair /root/.config/solana/id.json -c $CACHEFILENAME -l trace" | tee $RUNDIR/2-uploadLog.txt
+node /app/metaplex/js/packages/cli/build/candy-machine-cli.js upload /app/shared/assets/ --env $NETWORK -r $RPCLINK --keypair /root/.config/solana/id.json -c $CACHEFILENAME -l trace  2>&1 | tee -a $RUNDIR/2-uploadLog.txt
 
 #TODO Check log file
 # Potential Errors to watch for:
@@ -164,14 +176,14 @@ node /app/metaplex/js/packages/cli/build/candy-machine-cli.js upload /app/shared
 
 # Veryify uploads
 echo "Verify the uploads"
-echo "node /app/metaplex/js/packages/cli/build/candy-machine-cli.js verify --env $NETWORK --keypair /root/.config/solana/id.json -c $CACHEFILENAME -l trace" | tee $RUNDIR/3-verifyLog.txt
-node /app/metaplex/js/packages/cli/build/candy-machine-cli.js verify --env $NETWORK --keypair /root/.config/solana/id.json -c $CACHEFILENAME -l trace  2>&1 | tee -a $RUNDIR/3-verifyLog.txt
+echo "node /app/metaplex/js/packages/cli/build/candy-machine-cli.js verify --env $NETWORK -r $RPCLINK --keypair /root/.config/solana/id.json -c $CACHEFILENAME -l trace" | tee $RUNDIR/3-verifyLog.txt
+node /app/metaplex/js/packages/cli/build/candy-machine-cli.js verify --env $NETWORK -r $RPCLINK --keypair /root/.config/solana/id.json -c $CACHEFILENAME -l trace  2>&1 | tee -a $RUNDIR/3-verifyLog.txt
 #TODO Check log file
 
 # Create the Candy Machine
 echo "Creating Candy Machine"
-echo "node /app/metaplex/js/packages/cli/build/candy-machine-cli.js create_candy_machine -e $NETWORK --keypair /root/.config/solana/id.json -p $PRICE -c $CACHEFILENAME -l trace" | tee $RUNDIR/4-createCMLog.txt
-node /app/metaplex/js/packages/cli/build/candy-machine-cli.js create_candy_machine -e $NETWORK --keypair /root/.config/solana/id.json -p $PRICE -c $CACHEFILENAME -l trace 2>&1 | tee -a $RUNDIR/4-createCMLog.txt
+echo "node /app/metaplex/js/packages/cli/build/candy-machine-cli.js create_candy_machine -e $NETWORK -r $RPCLINK --keypair /root/.config/solana/id.json -p $PRICE -c $CACHEFILENAME -l trace" | tee $RUNDIR/4-createCMLog.txt
+node /app/metaplex/js/packages/cli/build/candy-machine-cli.js create_candy_machine -e $NETWORK -r $RPCLINK --keypair /root/.config/solana/id.json -p $PRICE -c $CACHEFILENAME -l trace 2>&1 | tee -a $RUNDIR/4-createCMLog.txt
 #TODO Check log file
 
 # Get the config id of the Candy Machine from the cache. 
@@ -187,8 +199,8 @@ while [ $i -lt $NUM_TO_MINT ]
 do
     # Use this to directly mint one token - mostly for testing, but can be used to mint tokens for special purposes.
     # Should work even before setting start date
-    echo "node /app/metaplex/js/packages/cli/build/candy-machine-cli.js mint_one_token -e $NETWORK -k /root/.config/solana/id.json -c $CACHEFILENAME -l trace" | tee $RUNDIR/5-mintoneLog-$i.txt
-    node /app/metaplex/js/packages/cli/build/candy-machine-cli.js mint_one_token -e $NETWORK -k /root/.config/solana/id.json -c $CACHEFILENAME -l trace  2>&1 | tee -a $RUNDIR/5-mintoneLog-$i.txt
+    echo "node /app/metaplex/js/packages/cli/build/candy-machine-cli.js mint_one_token -e $NETWORK -r $RPCLINK -k /root/.config/solana/id.json -c $CACHEFILENAME -l trace" | tee $RUNDIR/5-mintoneLog-$i.txt
+    node /app/metaplex/js/packages/cli/build/candy-machine-cli.js mint_one_token -e $NETWORK -r $RPCLINK -k /root/.config/solana/id.json -c $CACHEFILENAME -l trace  2>&1 | tee -a $RUNDIR/5-mintoneLog-$i.txt
     #TODO Check log file
     i=$(( $i + 1 ))
 done
@@ -198,18 +210,18 @@ if [[ $STARTDATE != '' ]]; then
     # Set the startdate for the Candy Machine
     # A past date is fine if you want access right away
     echo "Setting startdate to $STARTDATE"
-    echo "node /app/metaplex/js/packages/cli/build/candy-machine-cli.js update_candy_machine -e $NETWORK -k /root/.config/solana/id.json -d $STARTDATE -c $CACHEFILENAME -l trace" | tee $RUNDIR/6-updateStartDateLog.txt
-    node /app/metaplex/js/packages/cli/build/candy-machine-cli.js update_candy_machine -e $NETWORK -k /root/.config/solana/id.json -d "$STARTDATE" -c $CACHEFILENAME -l trace 2>&1 | tee -a $RUNDIR/6-updateStartDateLog.txt
+    echo "node /app/metaplex/js/packages/cli/build/candy-machine-cli.js update_candy_machine -e $NETWORK -r $RPCLINK -k /root/.config/solana/id.json -d $STARTDATE -c $CACHEFILENAME -l trace" | tee $RUNDIR/6-updateStartDateLog.txt
+    node /app/metaplex/js/packages/cli/build/candy-machine-cli.js update_candy_machine -e $NETWORK -r $RPCLINK -k /root/.config/solana/id.json -d "$STARTDATE" -c $CACHEFILENAME -l trace 2>&1 | tee -a $RUNDIR/6-updateStartDateLog.txt
     #TODO Check log file
 else
     echo "No default or passed startdate arg so only mint_one_token commands will be able to mint, unless updated by running the following:"
-    echo "node /app/metaplex/js/packages/cli/build/candy-machine-cli.js update_candy_machine -e $NETWORK -k /root/.config/solana/id.json -d "YOUR_START_DATE" -c $CACHEFILENAME -l trace "
+    echo "node /app/metaplex/js/packages/cli/build/candy-machine-cli.js update_candy_machine -e $NETWORK -r $RPCLINK -k /root/.config/solana/id.json -d "YOUR_START_DATE" -c $CACHEFILENAME -l trace "
 fi
 
 # Erase the Candy Machine config - get your SOL back
 echo "Run the below command to withdraw from all Candy Machines created by the wallet passed, this should not actually run unless you uncomment the command below in createCandyMachine.sh"
-echo "node /app/metaplex/js/packages/cli/build/candy-machine-cli.js withdraw -e $NETWORK --keypair /root/.config/solana/id.json -l trace" | tee $RUNDIR/7-withdrawLog.txt
-# node /app/metaplex/js/packages/cli/build/candy-machine-cli.js withdraw -e $NETWORK --keypair /root/.config/solana/id.json -l trace 2>&1 | tee -a $RUNDIR/7-withdrawLog.txt
+echo "node /app/metaplex/js/packages/cli/build/candy-machine-cli.js withdraw -e $NETWORK -r $RPCLINK --keypair /root/.config/solana/id.json -l trace" | tee $RUNDIR/7-withdrawLog.txt
+# node /app/metaplex/js/packages/cli/build/candy-machine-cli.js withdraw -e $NETWORK -r $RPCLINK --keypair /root/.config/solana/id.json -l trace 2>&1 | tee -a $RUNDIR/7-withdrawLog.txt
 # The actual command above is commented out, but whenever you are ready to actually do it, you can find the commnad in the log files 
 
 #######################
@@ -222,15 +234,13 @@ if [[ $STARTDATE != '' ]]; then
     CONFIG=$(cat $RUNDIR/quotedconfigid.txt)
     MACHINE_ID=$(cat $RUNDIR/4-createCMLog.txt | awk '/pubkey/ {print $6}')
     START_DATE=$(cat $RUNDIR/6-updateStartDateLog.txt | awk '/timestamp:/ {print $5}')
-    RPC_HOST=$(solana config get | awk '/RPC URL:/ {print $3}')
-    NETWORK=$(echo $RPC_HOST | awk -F  "." '/api/ {print $2}')
     ADDRESS=$(cat $RUNDIR/pub.key )
 
     sed -i "s/CONFIG_PLACEHOLDER/$CONFIG/g" $RUNDIR/.env
     sed -i "s/MACHINE_ID_PLACEHOLDER/\"$MACHINE_ID\"/g" $RUNDIR/.env
     sed -i "s/START_DATE_PLACEHOLDER/${START_DATE}000/g" $RUNDIR/.env
     sed -i "s/NETWORK_PLACEHOLDER/$NETWORK/g" $RUNDIR/.env
-    sed -i "s~RPC_HOST_PLACEHOLDER~$RPC_HOST~g" $RUNDIR/.env
+    sed -i "s~RPC_HOST_PLACEHOLDER~$RPCLINK~g" $RUNDIR/.env
     sed -i "s/ADDRESS_PLACEHOLDER/\"$ADDRESS\"/g" $RUNDIR/.env
 
     cp $RUNDIR/.env /app/candy-machine-mint/

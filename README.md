@@ -136,6 +136,13 @@ Inside the JSON files, there is an "image" key. This (along with an entry in fil
 
 By default arweave is used.  Support has been added for IPFS and AWS, but I have not tried those.
 
+## RPC ##
+By default the Candy Machine CLI and minting pages use public RPCs. The RPC is sort of like your internet provider, to connect to the blockchain network. The default RPC is like a public internet connection that is very heavily used and limited. These are okay for small tests, but will quickly rate limit you when trying to upload many files. You can upgrade your connection to Solana by getting your own RPC service. [QuickNode](https://www.quicknode.com?tap_a=67226-09396e&tap_s=2408354-e3e713&utm_source=affiliate&utm_campaign=generic&utm_content=affiliate_landing_page&utm_medium=generic) (I will get a little commission if you get a node using that link) is commonly used and the only I have tried. 
+
+You can sign up for a free trial of the $9/month plan which may be enough for under 1000 assets. You can do much more with the $9 plan if you activate it by paying the $9 to end the free trial. Make sure you set up your node on SOL(ana) not ETH(ereum) which is the default when you create a new node.  The nodes are specific to the network, so if you want to do a large test on devnet, then you should get a Devnet node, but then you will also likely need on one Mainnet Beta. To activate it, go to billing and click the activate link.
+
+Once you have your RPC node, copy the HTTP PROVIDER link and use it in your commands by adding -r HTTP_LINK or if using the script, edit the RPCLINK at the top of createCandyMachine.sh.
+
 ## Withdraw ##
 Candy Machine now supports withdrawing the SOL that went into the config account.  The config account is what holds the data on-chain that defines the NFTs that will be minted. Once you are done with minting, you can run withdraw to get that SOL back and the config account data will be wiped. 
 

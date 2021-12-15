@@ -12,7 +12,7 @@ git clone https://github.com/metaplex-foundation/metaplex.git /app/metaplex
 ######################
 ## If you need a specific commit 
 # cd /app/metaplex
-# git checkout 6364c1e7c4136474b1df03eca47be497ea160a38
+# git checkout 37218713d8587dcf18e3c70907d7f1d5545545f8
  
 ######################
 ## If you need a specific pull request
